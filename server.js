@@ -14,8 +14,7 @@ mongoose.connect("mongodb://apiBriz:C0nCeSi0Nar1a_Br1Zuela@ds018258.mlab.com:182
 	else{
 		console.log('Conexion ok');
 
-		server.listen(port, function(){
-			console.log("servidor en el puerto: "+ port);
+		server.listen(			console.log("servidor en el puerto: ");
 		})
 
 	}
