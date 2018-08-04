@@ -50,7 +50,7 @@ function getVehiculos(req, res){
 function getVehiculo(req, res){
 	var idV = req.params.id;
 
-	Vehiculo.findOne({numeroChasis: idV},(error,vehiculo)=>{
+	Vehiculo.findOne({$or:[{numeroChasis: idV}, {dominio: idV}]},(error,vehiculo)=>{
 		if(error){
 			res.status(500).send({mensaje:"error al obtener"})
 		}else{
