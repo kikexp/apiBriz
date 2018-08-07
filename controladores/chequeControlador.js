@@ -11,7 +11,7 @@ function altaCheque (req, res) {
 	Object.assign(cheques,parametros);
 	cheques.estado = true;
 
-	Cheque.findOne({numero: parametros.numero},(error, chequeEncontrado)=>{
+	Cheque.findOne({$and:[{numero: parametros.numero}, {estado: true}]},(error, chequeEncontrado)=>{
 
 		if(chequeEncontrado){
 			res.status(200).send({mensaje: "El numero de cheque ya fue ingresado. Intente nuevamente"});
@@ -40,7 +40,7 @@ function altaCheque (req, res) {
 
 function getCheques(req, res){
 
-	Cheque.find((error,mostrarCheques)=>{
+	Cheque.find({estado: true},(error,mostrarCheques)=>{
 
 		if(error){
 			res.status(500).send({mensaje: "error"});
@@ -52,8 +52,8 @@ function getCheques(req, res){
 } 
 
 function getCheque(req, res){
-	var id= req.params.id;
-	Cheque.findById(id,(error,Cheque)=>{
+	var prmid= req.params.id;
+	Cheque.findOne({$and:[{_id: prmid},{estado: true}]},(error,Cheque)=>{
 		if(error){
 			res.status(500).send({mensaje:"error al obtener"})
 		}else{
