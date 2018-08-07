@@ -7,13 +7,14 @@ function altaVehiculo (req, res) {
 	var parametros = req.body;
 
 	Object.assign(vehiculos,parametros);
-	vehiculos.estado = true;
-	Vehiculo.findOne({numeroChasis: parametros.numeroChasis}, (error, vehiculoEncontrado)=>{
+	
+	Vehiculo.findOne({$and: [{$or:[{numeroChasis: parametros.numeroChasis}, {dominio: parametros.dominio}]}, {estado: false}]}, (error, vehiculoEncontrado)=>{
 		if(vehiculoEncontrado){
 			res.status(200).send({mensaje:"Vehiculo existente"})
 		}
 		else
 		{
+			vehiculos.estado = true;
 			vehiculos.save((error, vehiculoGuardado) => {
 				if(error){
 					res.status(500).send({mensaje:"error"});
@@ -36,7 +37,7 @@ function altaVehiculo (req, res) {
 
 function getVehiculos(req, res){
 
-	Vehiculo.find((error,mostrarVehiculos)=>{
+	Vehiculo.find({estado: true},(error,mostrarVehiculos)=>{
 
 		if(error){
 			res.status(500).send({mensaje: "error"});
@@ -50,7 +51,7 @@ function getVehiculos(req, res){
 function getVehiculo(req, res){
 	var idV = req.params.id;
 
-	Vehiculo.findOne({$or:[{numeroChasis: idV}, {dominio: idV}]},(error,vehiculo)=>{
+	Vehiculo.findOne({$and: [{$or:[{numeroChasis: idV}, {dominio: idV}]}, {estado: true}]},(error,vehiculo)=>{
 		if(error){
 			res.status(500).send({mensaje:"error al obtener"})
 		}else{
