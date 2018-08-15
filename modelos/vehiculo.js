@@ -2,7 +2,7 @@
 var mongoose = require("mongoose");
 
 var Schema = mongoose.Schema;
-var Clientes = mongoose.model('clientes');
+var clientes = mongoose.model('clientes');
 
 var VehiculosSchema= Schema({
 	marca: String,
@@ -17,7 +17,7 @@ var VehiculosSchema= Schema({
 	titulo: Boolean,
 	cedulaVerde: Boolean,
 	formularioFirmado: Boolean,
-	impParque: [],
+	impParque: [{anio: String, cuotas: []}],
 	verPolicial: Boolean,
 	estadoDom: Boolean,
 	prenda: Boolean,
@@ -31,7 +31,7 @@ var VehiculosSchema= Schema({
 	gato: Boolean,
 	observaciones: String,
 	estado: Boolean,
-	vendedor: { type: Schema.ObjectId, ref: "Clientes" }
+	vendedor: { type: Schema.ObjectId, ref: "clientes" }
 
 })
 

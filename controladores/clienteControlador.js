@@ -58,7 +58,7 @@ function getCliente(req, res){
 	var idC= req.params.id;
 	Clientes.findOne({dni:idC},(error,cliente)=>{
 		if(error){
-			res.status(500).send({mensaje:"error al obtener"})
+			res.status(500).send({mensaje:"error al obtener ", error})
 		}else{
 			if(!cliente){
 				res.status(404).send({mensaje: "Cliente no encontrado!"});

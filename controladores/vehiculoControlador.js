@@ -1,11 +1,12 @@
 "use strict"
 
 var Vehiculo = require("../modelos/vehiculo.js");
+var vendedor = require("../modelos/cliente.js");
 
 function altaVehiculo (req, res) {
 	var vehiculos = new Vehiculo();
 	var parametros = req.body;
-
+	parametros.vendedor = parametros.vendedor._id;
 	Object.assign(vehiculos,parametros);
 	
 	Vehiculo.findOne({$and: [{$or:[{numeroChasis: parametros.numeroChasis}, {dominio: parametros.dominio}]}, {estado: false}]}, (error, vehiculoEncontrado)=>{
@@ -40,12 +41,12 @@ function getVehiculos(req, res){
 	Vehiculo.find({estado: true},(error,mostrarVehiculos)=>{
 
 		if(error){
-			res.status(500).send({mensaje: "error"});
+			res.status(500).send({mensaje: "error", error});
 		}else {
 
 			res.status(200).send({mostrarVehiculos});
 		}
-	}).sort("_id");
+	}).sort("_id").populate("vendedor");
 } 
 
 function getVehiculo(req, res){
@@ -53,7 +54,7 @@ function getVehiculo(req, res){
 
 	Vehiculo.findOne({$and: [{$or:[{numeroChasis: idV}, {dominio: idV}]}, {estado: true}]},(error,vehiculo)=>{
 		if(error){
-			res.status(500).send({mensaje:"error al obtener"})
+			res.status(500).send({mensaje:"error al obtener", error})
 		}else{
 			if(!vehiculo){
 				res.status(404).send({mensaje: "Vehiculo no encontrado!"});
@@ -62,7 +63,7 @@ function getVehiculo(req, res){
 			}
 			
 		}
-	})
+	}).populate("vendedor");
 }
 
 function putVehiculo(req, res){
