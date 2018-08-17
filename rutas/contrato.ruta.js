@@ -13,7 +13,7 @@ api.post("/altaContrato",md_aut.autenticacion, ControladorContrato.altaContrato)
 
 api.get("/verContratos",md_aut.autenticacion, ControladorContrato.getContratos);
 
-api.get("/verContrato/:id",md_aut.autenticacion, ControladorContrato.getContratos);
+api.get("/verContrato/:id",md_aut.autenticacion, ControladorContrato.getContrato);
 
 api.put("/actualizarContrato/:id",md_aut.autenticacion, ControladorContrato.putContrato);
 

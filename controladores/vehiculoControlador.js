@@ -6,7 +6,10 @@ var vendedor = require("../modelos/cliente.js");
 function altaVehiculo (req, res) {
 	var vehiculos = new Vehiculo();
 	var parametros = req.body;
-	parametros.vendedor = parametros.vendedor._id;
+	if(parametros.vendedor){
+		parametros.vendedor = parametros.vendedor._id;
+	}
+	
 	Object.assign(vehiculos,parametros);
 	
 	Vehiculo.findOne({$and: [{$or:[{numeroChasis: parametros.numeroChasis}, {dominio: parametros.dominio}]}, {estado: false}]}, (error, vehiculoEncontrado)=>{
@@ -26,6 +29,7 @@ function altaVehiculo (req, res) {
 						res.status(404).send({mensaje:"error 1"})
 					}else {
 						res.status(200).send({vehiculoGuardado});
+
 					}
 					
 				}
@@ -52,7 +56,13 @@ function getVehiculos(req, res){
 function getVehiculo(req, res){
 	var idV = req.params.id;
 
-	Vehiculo.findOne({$and: [{$or:[{numeroChasis: idV}, {dominio: idV}]}, {estado: true}]},(error,vehiculo)=>{
+	Vehiculo.findOne({
+
+		$and: [ 
+			{$or:[ {numeroChasis: idV}, {dominio: idV} ]},
+			{estado: true}]
+
+		},(error,vehiculo)=>{
 		if(error){
 			res.status(500).send({mensaje:"error al obtener", error})
 		}else{
@@ -69,19 +79,59 @@ function getVehiculo(req, res){
 function putVehiculo(req, res){
 	var idV = req.params.id;
 	var actualizar = req.body;
-	Vehiculo.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
+	
+	if(actualizar.vendedor.dni){
+
+		vendedor.findOne({dni: actualizar.vendedor.dni},(error, vendedor)=>{
+			if(error){
+				console.log(error)
+			}
+			else {
+				console.log("entra");
+				actualizar.vendedor = vendedor._id.toString() ;
+				console.log(actualizar)
+
+				Vehiculo.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
+					if(error){
+						console.log(error)
+						res.status(500).send({mensaje:"error al actualizar"});
+
+					}
+					else{
+						if(!actualizado){
+							res.status(404).send({mensaje:"error al actualizar"})
+							console.log(error);
+						}else{
+							res.status(200).send({actualizado});
+						}
+						
+					}
+				})
+
+
+			}
+		})
+	}else{
+		delete actualizar.vendedor;
+		Vehiculo.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
 		if(error){
-			res.status(500).send({mensaje:"error al actualizar"})
+			console.log(error)
+			res.status(500).send({mensaje:"error al actualizar"});
+
 		}
 		else{
 			if(!actualizado){
 				res.status(404).send({mensaje:"error al actualizar"})
+				console.log(error);
 			}else{
 				res.status(200).send({actualizado});
 			}
 			
 		}
 	})
+	}
+		
+	
 }
 
 module.exports ={

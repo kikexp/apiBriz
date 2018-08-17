@@ -17,7 +17,7 @@ var VehiculosSchema= Schema({
 	titulo: Boolean,
 	cedulaVerde: Boolean,
 	formularioFirmado: Boolean,
-	impParque: [{anio: String, cuotas: []}],
+	impParque: [{}],
 	verPolicial: Boolean,
 	estadoDom: Boolean,
 	prenda: Boolean,
