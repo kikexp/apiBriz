@@ -19,7 +19,8 @@ var ContratoSchema = Schema({
 	montoFinanc: Number,
 	cantCuotas: Number,
 	importeCuotas: String,
-	adicional: String
+	adicional: String,
+	estado: Boolean
 
 
 })

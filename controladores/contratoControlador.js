@@ -7,9 +7,7 @@ function altaContrato (req, res) {
 	var parametros = req.body;
 
 	Object.assign(contratos,parametros);
-
-	
-
+	contratos.estado = true;
 	contratos.save((error, ContratoGuardado) => {
 		if(error){
 			res.status(500).send({mensaje:"error"});
@@ -29,7 +27,7 @@ function altaContrato (req, res) {
 
 function getContratos(req, res){
 
-	Contrato.find((error,mostrarContratos)=>{
+	Contrato.find({estado: true},(error,mostrarContratos)=>{
 
 		if(error){
 			res.status(500).send({mensaje: "error"});
@@ -61,7 +59,8 @@ function putContrato(req, res){
 	var actualizar = req.body;
 	Contrato.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
 		if(error){
-			res.status(500).send({mensaje:"error al actualizar"})
+			console.log(error)
+			res.status(500).send({mensaje: error})
 		}
 		else{
 			if(!actualizado){
