@@ -4,39 +4,94 @@ var Vehiculo = require("../modelos/vehiculo.js");
 var vendedor = require("../modelos/cliente.js");
 
 function altaVehiculo (req, res) {
-	var vehiculos = new Vehiculo();
+	
 	var parametros = req.body;
 	if(parametros.vendedor){
 		parametros.vendedor = parametros.vendedor._id;
 	}
 	
-	Object.assign(vehiculos,parametros);
+	if(parametros.dominio){
+		Vehiculo.findOne({
+
+			$and: [ 
+				{dominio: parametros.dominio},
+				{estado: true}]
+
+			},(error,vehiculo)=>{
+			if(error){
+				res.status(500).send({mensaje:"error al obtener", error});
+
+			}else{
+				if(!vehiculo){
+					var vehiculos = new Vehiculo();
+					Object.assign(vehiculos,parametros);
+					vehiculos.estado = true;
+					vehiculos.save((error, vehiculoGuardado) => {
+						if(error){
+							res.status(500).send({mensaje:"error"});
+						}
+						else{
+
+							if(!vehiculoGuardado){
+								res.status(404).send({mensaje:"error 1"})
+							}else {
+								res.status(200).send({mensaje:"vehiculo guardado",vehiculoGuardado});
+
+							}
+							
+						}
+					})
+					res.status(200).send("vehiculo guardado",vehiculoGuardado)
+					//res.status(404).send({mensaje: "Vehiculo no encontrado!"});
+				}else{
+					res.status(200).send({mensaje:"vehiculo existente"});
+				}
+				
+			}
+		}).populate("vendedor");
+	}
+	else
+	{
+		Vehiculo.findOne({
+
+			$and: [ 
+				{numeroChasis: parametros.numeroChasis},
+				{estado: true}]
+
+			},(error,vehiculo)=>{
+			
+			if(error){
+				res.status(500).send({mensaje:"error al obtener", error});
+
+			}else{
+				if(!vehiculo){
+					var vehiculos = new Vehiculo();
+					Object.assign(vehiculos,parametros);
+					vehiculos.estado = true;
+					vehiculos.save((error, vehiculoGuardado) => {
+						if(error){
+							res.status(500).send({mensaje:"error"});
+						}
+						else{
+
+							if(!vehiculoGuardado){
+								res.status(404).send({mensaje:"error 1"})
+							}else {
+								res.status(200).send({mensaje:"vehiculo guardado",vehiculoGuardado});
+
+							}
+							
+						}
+					})
+					//res.status(404).send({mensaje: "Vehiculo no encontrado!"});
+				}else{
+					res.status(200).send("vehiculo existente");
+				}
+				
+			}
+		}).populate("vendedor");
+	}
 	
-	Vehiculo.findOne({$and: [{$or:[{numeroChasis: parametros.numeroChasis}, {dominio: parametros.dominio}]}, {estado: false}]}, (error, vehiculoEncontrado)=>{
-		if(vehiculoEncontrado){
-			res.status(200).send({mensaje:"Vehiculo existente"})
-		}
-		else
-		{
-			vehiculos.estado = true;
-			vehiculos.save((error, vehiculoGuardado) => {
-				if(error){
-					res.status(500).send({mensaje:"error"});
-				}
-				else{
-
-					if(!vehiculoGuardado){
-						res.status(404).send({mensaje:"error 1"})
-					}else {
-						res.status(200).send({vehiculoGuardado});
-
-					}
-					
-				}
-			})
-		}
-
-	}).populate("vendedor")
 	
 }
 
