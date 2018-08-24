@@ -5,8 +5,13 @@ var Contrato = require("../modelos/contrato.js");
 function altaContrato (req, res) {
 	var contratos = new Contrato();
 	var parametros = req.body;
+	var arrayProp = []
 
 	Object.assign(contratos,parametros);
+	if(actualizar.propietarios[1]._id != ''){
+		arrayProp[1] = actualizar.propietarios[1]._id
+	}
+	contratos.propietarios = arrayProp;
 	contratos.estado = true;
 	contratos.save((error, ContratoGuardado) => {
 		if(error){

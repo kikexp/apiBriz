@@ -171,7 +171,7 @@ function putVehiculo(req, res){
 	else
 	{
 		delete actualizar.vendedor;
-			Vehiculo.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
+		Vehiculo.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
 			if(error){
 				console.log(error)
 				res.status(500).send({mensaje:"error al actualizar"});
@@ -185,7 +185,7 @@ function putVehiculo(req, res){
 					res.status(200).send({actualizado});
 				}
 				
-			}
+		}
 		})
 	}
 
