@@ -1,29 +1,34 @@
 "use strict"
-
+var findOrCreate = require('mongoose-findorcreate')
 var Vehiculo = require("../modelos/vehiculo.js");
 var vendedor = require("../modelos/cliente.js");
 
 function altaVehiculo (req, res) {
-	
+
+	var vehiculos = new Vehiculo();
+
+
 	var parametros = req.body;
+
 	if(parametros.vendedor){
 		parametros.vendedor = parametros.vendedor._id;
 	}
-	
-	if(parametros.dominio){
+
+	if(!parametros.numeroChasis){
 		Vehiculo.findOne({
 
-			$and: [ 
-				{dominio: parametros.dominio},
-				{estado: true}]
+		$and: [ 
+			{dominio: parametros.dominio},
+			{estado: true}]
 
-			},(error,vehiculo)=>{
-			if(error){
-				res.status(500).send({mensaje:"error al obtener", error});
-
-			}else{
-				if(!vehiculo){
-					var vehiculos = new Vehiculo();
+		}, function(err, vehiculoExistente){
+			if(err){
+				res.status(500).send({mensaje:"error al guardar"})
+			}
+			else{
+				console.log(vehiculoExistente)
+				if(!vehiculoExistente){
+					console.log(parametros)
 					Object.assign(vehiculos,parametros);
 					vehiculos.estado = true;
 					vehiculos.save((error, vehiculoGuardado) => {
@@ -33,7 +38,7 @@ function altaVehiculo (req, res) {
 						else{
 
 							if(!vehiculoGuardado){
-								res.status(404).send({mensaje:"error 1"})
+								res.status(200).send({mensaje:"error 1"})
 							}else {
 								res.status(200).send({mensaje:"vehiculo guardado",vehiculoGuardado});
 
@@ -41,31 +46,27 @@ function altaVehiculo (req, res) {
 							
 						}
 					})
-					res.status(200).send("vehiculo guardado",vehiculoGuardado)
-					//res.status(404).send({mensaje: "Vehiculo no encontrado!"});
-				}else{
-					res.status(200).send({mensaje:"vehiculo existente"});
+					//res.status(200).send({mensaje: "vehiculo creado", vehiculoGuardado})
+				}else {
+					res.status(200).send({mensaje: "vehiculo existente"})
 				}
-				
 			}
-		}).populate("vendedor");
-	}
-	else
-	{
+		})
+	}else {
 		Vehiculo.findOne({
 
-			$and: [ 
-				{numeroChasis: parametros.numeroChasis},
-				{estado: true}]
+		$and: [ 
+			{numeroChasis: parametros.numeroChasis},
+			{estado: true}]
 
-			},(error,vehiculo)=>{
-			
-			if(error){
-				res.status(500).send({mensaje:"error al obtener", error});
-
-			}else{
-				if(!vehiculo){
-					var vehiculos = new Vehiculo();
+		}, function(err, vehiculoExistente){
+			if(err){
+				res.status(500).send({mensaje:"error al guardar"})
+			}
+			else{
+				//console.log(vehiculoExistente)
+				if(!vehiculoExistente){
+					console.log(parametros)
 					Object.assign(vehiculos,parametros);
 					vehiculos.estado = true;
 					vehiculos.save((error, vehiculoGuardado) => {
@@ -75,7 +76,7 @@ function altaVehiculo (req, res) {
 						else{
 
 							if(!vehiculoGuardado){
-								res.status(404).send({mensaje:"error 1"})
+								res.status(200).send({mensaje:"error 1"})
 							}else {
 								res.status(200).send({mensaje:"vehiculo guardado",vehiculoGuardado});
 
@@ -83,13 +84,12 @@ function altaVehiculo (req, res) {
 							
 						}
 					})
-					//res.status(404).send({mensaje: "Vehiculo no encontrado!"});
-				}else{
-					res.status(200).send("vehiculo existente");
+					//res.status(200).send({mensaje: "vehiculo creado", vehiculoGuardado})
+				}else {
+					res.status(200).send({mensaje: "vehiculo existente"})
 				}
-				
 			}
-		}).populate("vendedor");
+		})
 	}
 	
 	

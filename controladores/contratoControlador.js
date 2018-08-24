@@ -57,6 +57,21 @@ function getContrato(req, res){
 function putContrato(req, res){
 	var idV = req.params.id;
 	var actualizar = req.body;
+	var arrayProp = []
+	arrayProp[0] = actualizar.propietarios[0]._id
+	if (actualizar.usado) {
+		actualizar.usado = actualizar.usado._id;
+	}
+	if(actualizar.vehiculo){
+		actualizar.vehiculo = actualizar.vehiculo._id
+	}
+
+	if(actualizar.propietarios[1]._id != ''){
+		arrayProp[1] = actualizar.propietarios[1]._id
+	}
+	actualizar.propietarios = arrayProp
+	console.log(actualizar);
+	console.log(arrayProp)
 	Contrato.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
 		if(error){
 			console.log(error)

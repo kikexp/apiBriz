@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 
 var Schema = mongoose.Schema;
 var clientes = mongoose.model('clientes');
+var findOrCreate = require('mongoose-findorcreate')
 
 var VehiculosSchema= Schema({
 	marca: String,
@@ -34,5 +35,5 @@ var VehiculosSchema= Schema({
 	vendedor: { type: Schema.ObjectId, ref: "clientes" }
 
 })
-
+VehiculosSchema.plugin(findOrCreate);
 module.exports = mongoose.model("vehiculos", VehiculosSchema);
