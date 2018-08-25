@@ -13,6 +13,8 @@ function altaContrato (req, res) {
 		arrayProp[1] = contratos.propietarios[1]
 	}
 	contratos.propietarios = arrayProp;
+	console.log(arrayProp)
+	console.log(contratos.propietarios)
 	contratos.estado = true;
 	contratos.save((error, ContratoGuardado) => {
 		if(error){
