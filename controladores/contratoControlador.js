@@ -8,8 +8,9 @@ function altaContrato (req, res) {
 	var arrayProp = []
 
 	Object.assign(contratos,parametros);
-	if(actualizar.propietarios[1]._id != ''){
-		arrayProp[1] = actualizar.propietarios[1]._id
+	arrayProp.push(contratos.propietarios[0])
+	if(contratos.propietarios[1] != ''){
+		arrayProp[1] = contratos.propietarios[1]
 	}
 	contratos.propietarios = arrayProp;
 	contratos.estado = true;
