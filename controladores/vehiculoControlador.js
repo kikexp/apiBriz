@@ -143,6 +143,44 @@ function putVehiculo(req, res){
 				}
 				else {
 					console.log("entra");
+					if (!vendedor._id) {
+						Object.assign(vendedor,actualizar.vendedor);
+						vendedor.save((error,vendedorGuardado)=>{
+
+						if(error){
+
+							res.status(500).send({mensaje: "error al guardar"});
+						}
+
+						else {
+
+							if(!clienteGuardado){
+								res.status(404).send({mensaje: "error al guardar 1"});
+							}
+
+							else {
+								actualizar.vendedor = vendedorGuardado;
+								Vehiculo.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
+									if(error){
+										console.log(error)
+										res.status(500).send({mensaje:"error al actualizar"});
+
+									}
+									else{
+										if(!actualizado){
+											res.status(404).send({mensaje:"error al actualizar"})
+											console.log(error);
+										}else{
+											res.status(200).send({actualizado});
+										}
+										
+									}
+								})
+								res.status(200).send({clienteGuardado});
+							}
+						}
+						})														
+					}
 					actualizar.vendedor = vendedor._id.toString() ;
 					console.log(actualizar)
 
@@ -166,27 +204,29 @@ function putVehiculo(req, res){
 
 				}
 			})
+		}else {
+			delete actualizar.vendedor;
+			Vehiculo.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
+				if(error){
+					console.log(error)
+					res.status(500).send({mensaje:"error al actualizar"});
+
+				}
+				else{
+					if(!actualizado){
+						res.status(404).send({mensaje:"error al actualizar"})
+						console.log(error);
+					}else{
+						res.status(200).send({actualizado});
+					}
+					
+				}
+			})
 		}
 	}
 	else
 	{
-		delete actualizar.vendedor;
-		Vehiculo.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
-			if(error){
-				console.log(error)
-				res.status(500).send({mensaje:"error al actualizar"});
-
-			}
-			else{
-				if(!actualizado){
-					res.status(404).send({mensaje:"error al actualizar"})
-					console.log(error);
-				}else{
-					res.status(200).send({actualizado});
-				}
-				
-		}
-		})
+		
 	}
 
 	
