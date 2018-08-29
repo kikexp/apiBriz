@@ -105,7 +105,7 @@ function getVehiculos(req, res){
 
 			res.status(200).send({mostrarVehiculos});
 		}
-	}).sort("_id").populate("vendedor");
+	}).sort("marca").populate("vendedor");
 } 
 
 function getVehiculo(req, res){
@@ -132,17 +132,23 @@ function getVehiculo(req, res){
 }
 
 function putVehiculo(req, res){
+	console.log("entra al controlador")
 	var idV = req.params.id;
 	var actualizar = req.body;
-	if(actualizar.vendedor){
+	console.log(actualizar.vendedor);
+	console.log(actualizar)
+	
+	if('vendedor' in actualizar){
+		console.log("entra al if de vendedor")
 		if(actualizar.vendedor.dni){
-
+			console.log("entra al if de vendedor.dni")
 			vendedor.findOne({dni: actualizar.vendedor.dni},(error, vendedor)=>{
 				if(error){
 					console.log(error)
 				}
 				else {
-					console.log("entra");
+					console.log("entra al buscar vendedor", vendedor);
+
 					if (!vendedor._id) {
 						Object.assign(vendedor,actualizar.vendedor);
 						vendedor.save((error,vendedorGuardado)=>{
@@ -226,7 +232,22 @@ function putVehiculo(req, res){
 	}
 	else
 	{
-		
+		Vehiculo.findByIdAndUpdate( idV, actualizar, (error, actualizado)=>{
+				if(error){
+					console.log(error)
+					res.status(500).send({mensaje:"error al actualizar"});
+
+				}
+				else{
+					if(!actualizado){
+						res.status(404).send({mensaje:"error al actualizar"})
+						console.log(error);
+					}else{
+						res.status(200).send({actualizado});
+					}
+					
+				}
+			})
 	}
 
 	
