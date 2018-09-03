@@ -74,7 +74,7 @@ function putContrato(req, res){
 		actualizar.vehiculo = actualizar.vehiculo._id
 	}
 
-	if(actualizar.propietarios[1]._id != ''){
+	if(actualizar.propietarios[1]){
 		arrayProp[1] = actualizar.propietarios[1]._id
 	}
 	actualizar.propietarios = arrayProp
