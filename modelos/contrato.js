@@ -9,6 +9,7 @@ var vehiculos = mongoose.model('vehiculos');
 var ContratoSchema = Schema({
 
 	fechaIngreso: Date,
+	numeroVenta: Number,
 	vehiculo: { type: Schema.ObjectId, ref: "vehiculos"},
 	propietarios: [{type: Schema.ObjectId, ref: "clientes"}],	
 	gastos: String,

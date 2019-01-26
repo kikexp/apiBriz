@@ -26,7 +26,19 @@ function altaContrato (req, res) {
 			if(!ContratoGuardado){
 				res.status(404).send({mensaje:"error 1"})
 			}else {
-				res.status(200).send({ContratoGuardado});
+				Contrato.findById(ContratoGuardado.id,(error,Contrato)=>{
+					if(error){
+						res.status(500).send({mensaje:"error al obtener"})
+					}else{
+						if(!Contrato){
+							res.status(404).send({mensaje: "error al actualizar"});
+						}else{
+							res.status(200).send({Contrato});
+						}
+						
+					}
+				}).populate("vehiculo").populate("propietarios").populate("usado")
+				
 			}
 			
 		}
