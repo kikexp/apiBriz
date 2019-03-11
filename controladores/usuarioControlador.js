@@ -11,171 +11,170 @@ var bcrypt = require("bcrypt-nodejs");
 var token = require("../seguridad/token.js");
 
 //Método para crear Usuarios
-function crearUsuarios(req, res){
+function crearUsuarios(req, res) {
 
-	//creamos una variable que traiga el objeto del modelo Usuarios
-	var usuarios = new Usuarios();
+    //creamos una variable que traiga el objeto del modelo Usuarios
+    var usuarios = new Usuarios();
 
-	//recogemos los parámetros que llegan por la petición POST
-	var parametros = req.body;
+    //recogemos los parámetros que llegan por la petición POST
+    var parametros = req.body;
 
-	usuarios.usuario = parametros.usuario;
-	
-	if(parametros.password){
+    usuarios.usuario = parametros.usuario;
 
-		bcrypt.hash(parametros.password, null, null, function(error, hash){
+    if (parametros.password) {
 
-			usuarios.password = hash;
+        bcrypt.hash(parametros.password, null, null, function(error, hash) {
 
-			if(usuarios.usuario != null){
+            usuarios.password = hash;
 
-				usuarios.save((error, usuarioGuardado)=>{
+            if (usuarios.usuario != null) {
 
-					if(error){
+                usuarios.save((error, usuarioGuardado) => {
 
-						res.status(500).send({mensaje: "Error al guardar el usuario"})
+                    if (error) {
 
-					}else{
+                        res.status(500).send({ mensaje: "Error al guardar el usuario" })
 
-						res.status(200).send({usuarioGuardado})
-					}
+                    } else {
 
-				})
+                        res.status(200).send({ usuarioGuardado })
+                    }
 
-			}
+                })
 
-		})
+            }
 
-	}
+        })
+
+    }
 
 }
 
 //Método para ingreso de usuarios
-function ingresoUsuario(req, res){
+function ingresoUsuario(req, res) {
 
-	var parametros = req.body;
-	var usuario = parametros.usuario;
-	var password = parametros.password;
+    console.log(req.body)
+    var parametros = req.body;
+    var usuario = parametros.usuario;
+    var password = parametros.password;
 
-	Usuarios.findOne({usuario:usuario}, (error, seleccionUsuario)=>{
+    Usuarios.findOne({ usuario: usuario }, (error, seleccionUsuario) => {
 
-		if(error){
+        if (error) {
 
-			res.status(500).send({mensaje: "Error al ingresar el usuario"})
+            res.status(500).send({ mensaje: "Error al ingresar el usuario" })
 
-		}else{
+        } else {
 
-			if(!seleccionUsuario){
+            if (!seleccionUsuario) {
 
-				res.status(404).send({mensaje: "El usuario no existe"})
-			
-			}else{
+                res.status(404).send({ mensaje: "El usuario no existe" })
 
-				// res.status(200).send({seleccionUsuario});
+            } else {
 
-				//Comparamos la contraseña que viene del INPUT con la contraseña de la DB
-				bcrypt.compare(password, seleccionUsuario.password, function(error, ok){
+                // res.status(200).send({seleccionUsuario});
 
-					if(ok){
+                //Comparamos la contraseña que viene del INPUT con la contraseña de la DB
+                bcrypt.compare(password, seleccionUsuario.password, function(error, ok) {
 
-						// res.status(200).send({seleccionUsuario});
+                    if (ok) {
 
-						 // Debemos enviar un parámetro token en verdadero
+                        // res.status(200).send({seleccionUsuario});
 
-						if(parametros.token){
+                        // Debemos enviar un parámetro token en verdadero
 
-							//Devolvemos un token de JWT
-							res.status(200).send({token: token.crearToken(seleccionUsuario), usuario: seleccionUsuario.usuario })
+                        if (parametros.token) {
 
-						}	
-					
-					}else{
+                            //Devolvemos un token de JWT
+                            res.status(200).send({ token: token.crearToken(seleccionUsuario), usuario: seleccionUsuario.usuario })
 
-						res.status(404).send({mensaje: "El usuario no ha podido ingresar"})
-					}
+                        }
 
-				})
+                    } else {
 
-			}
+                        res.status(404).send({ mensaje: "El usuario no ha podido ingresar" })
+                    }
 
-		}
+                })
 
-	})
+            }
+
+        }
+
+    })
 
 }
 
 //Método para actualizar usuario
-function actualizarUsuario(req, res){
+function actualizarUsuario(req, res) {
 
-	//Llamamos por parámetro el id que necesitamos actualizar
-	var id = req.params.id;
-	//Tomamos los datos del formulario
-	var actualizar = req.body;
+    //Llamamos por parámetro el id que necesitamos actualizar
+    var id = req.params.id;
+    //Tomamos los datos del formulario
+    var actualizar = req.body;
 
-	if(id != req.usuarioToken.sub){
+    if (id != req.usuarioToken.sub) {
 
-		return res.status(500).send({mensaje: "No tienes permisos para actualizar este usuario"})
-	
-	}
+        return res.status(500).send({ mensaje: "No tienes permisos para actualizar este usuario" })
 
-	//Recorremos la base de datos con el método findByIdAndUpdate
+    }
 
-	Usuarios.findByIdAndUpdate(id, actualizar, (error, usuarioActualizado)=>{
+    //Recorremos la base de datos con el método findByIdAndUpdate
 
-		if(error){
+    Usuarios.findByIdAndUpdate(id, actualizar, (error, usuarioActualizado) => {
 
-			return res.status(500).send({mensaje: "Error al actualizar el usuario"});
-		}
+        if (error) {
 
-		else{
+            return res.status(500).send({ mensaje: "Error al actualizar el usuario" });
+        } else {
 
-			if(!usuarioActualizado){
+            if (!usuarioActualizado) {
 
-				return res.status(404).send({mensaje: "No se ha podido actualizar el usuario"});
+                return res.status(404).send({ mensaje: "No se ha podido actualizar el usuario" });
 
-			}else{
+            } else {
 
-				return res.status(200).send({usuarioActualizado});
-			}
+                return res.status(200).send({ usuarioActualizado });
+            }
 
-		}
+        }
 
-	})
+    })
 
 }
 
 //Método para borrar usuario
-function borrarUsuario(req, res){
+function borrarUsuario(req, res) {
 
-	var id = req.params.id;
+    var id = req.params.id;
 
-	if(id != req.usuarioToken.sub){
+    if (id != req.usuarioToken.sub) {
 
-		return res.status(500).send({mensaje: "No tienes permisos para actualizar este usuario"})
-	
-	}
+        return res.status(500).send({ mensaje: "No tienes permisos para actualizar este usuario" })
 
-	//Recorremos la base de datos con el método findByIdAndRemove
-	Usuarios.findByIdAndRemove(id, (error, usuarioBorrado)=>{
+    }
 
-		if(error){
+    //Recorremos la base de datos con el método findByIdAndRemove
+    Usuarios.findByIdAndRemove(id, (error, usuarioBorrado) => {
 
-			res.status(500).send({mensaje: "Error al borrar el usuario"})
+        if (error) {
 
-		}else{
+            res.status(500).send({ mensaje: "Error al borrar el usuario" })
 
-			if(!usuarioBorrado){
+        } else {
 
-				res.status(404).send({mensaje: "No se ha podido borrado el usuario"})
+            if (!usuarioBorrado) {
 
-			}else{
+                res.status(404).send({ mensaje: "No se ha podido borrado el usuario" })
 
-				res.status(200).send({usuarioBorrado})
-			}
+            } else {
 
-		}
+                res.status(200).send({ usuarioBorrado })
+            }
 
-	})
+        }
+
+    })
 
 
 }
@@ -183,9 +182,9 @@ function borrarUsuario(req, res){
 //Exportamos los métodos del módulo
 module.exports = {
 
-	crearUsuarios,
-	ingresoUsuario,
-	
-	actualizarUsuario,
-	borrarUsuario
+    crearUsuarios,
+    ingresoUsuario,
+
+    actualizarUsuario,
+    borrarUsuario
 }

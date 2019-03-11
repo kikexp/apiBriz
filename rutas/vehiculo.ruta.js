@@ -9,12 +9,12 @@ var md_aut = require("../seguridad/auth.js");
 
 //Ruta POST Cliente
 
-api.post("/altaVehiculo",md_aut.autenticacion, ControladorVehiculo.altaVehiculo);
+api.post("/altaVehiculo", md_aut.autenticacion, ControladorVehiculo.altaVehiculo);
 
-api.get("/verVehiculos",md_aut.autenticacion, ControladorVehiculo.getVehiculos);
+api.get("/verVehiculos", md_aut.autenticacion, ControladorVehiculo.getVehiculos);
 
-api.get("/verVehiculo/:id",md_aut.autenticacion, ControladorVehiculo.getVehiculo);
+api.get("/verVehiculo/:id", md_aut.autenticacion, ControladorVehiculo.getVehiculo);
 
-api.put("/actualizarVehiculo/:id",md_aut.autenticacion, ControladorVehiculo.putVehiculo);
+api.put("/actualizarVehiculo/:id", md_aut.autenticacion, ControladorVehiculo.putVehiculo);
 
 module.exports = api;
