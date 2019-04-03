@@ -106,6 +106,5 @@ module.exports = {
     altaCliente,
     getClientes,
     getCliente,
-    getClienteDni,
     putCliente
 }

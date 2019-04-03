@@ -2,7 +2,7 @@
 
 var express = require("express");
 
-var ControladorCliente = require("../controladores/clienteControlador.js");
+var ControladorCliente = require("../controladores/clienteControlador.js").default;
 
 var api = express.Router();
 
@@ -14,7 +14,7 @@ api.post("/altaCliente", md_aut.autenticacion, ControladorCliente.altaCliente);
 
 api.get("/verClientes", md_aut.autenticacion, ControladorCliente.getClientes);
 
-api.get("/verClienteDni/:id", md_aut.autenticacion, ControladorCliente.getClienteDni);
+api.get("/verClienteDni/:id", md_aut, ControladorCliente.get);
 
 api.get("/verCliente/:id", md_aut.autenticacion, ControladorCliente.getCliente);
 

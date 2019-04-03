@@ -53,8 +53,11 @@ function getClientes(req, res) {
 }
 
 function getCliente(req, res) {
-    var idC = req.params.id;
-    Clientes.findOne({ _id: idC }, (error, cliente) => {
+
+    var ObjectId = require('mongoose').Types.ObjectId;
+    var idC = new ObjectId((req.params.id.length < 12) ? "123456789012" : req.params.id);
+
+    Clientes.findOne({ $or: [{ '_id': idC }, { 'dni': req.params.id }] }, (error, cliente) => {
         if (error) {
             res.status(500).send({ mensaje: "error al obtener ", error })
         } else {
@@ -66,22 +69,6 @@ function getCliente(req, res) {
 
         }
     })
-}
-
-function getClienteDni(req, res) {
-    var dniC = req.params.id;
-    Clientes.findOne({ dni: dniC }, (error, cliente) => {
-        if (error) {
-            res.status(500).send({ mensaje: "error al obtener", error });
-        } else {
-            if (!cliente) {
-                res.status(404).send({ mensaje: "Cliente no encontrado!" });
-            } else {
-                res.status(200).send({ cliente });
-            }
-
-        }
-    });
 }
 
 function putCliente(req, res) {
@@ -106,6 +93,5 @@ module.exports = {
     altaCliente,
     getClientes,
     getCliente,
-    getClienteDni,
     putCliente
 }

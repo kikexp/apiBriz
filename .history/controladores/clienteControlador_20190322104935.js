@@ -68,22 +68,6 @@ function getCliente(req, res) {
     })
 }
 
-function getClienteDni(req, res) {
-    var dniC = req.params.id;
-    Clientes.findOne({ dni: dniC }, (error, cliente) => {
-        if (error) {
-            res.status(500).send({ mensaje: "error al obtener", error });
-        } else {
-            if (!cliente) {
-                res.status(404).send({ mensaje: "Cliente no encontrado!" });
-            } else {
-                res.status(200).send({ cliente });
-            }
-
-        }
-    });
-}
-
 function putCliente(req, res) {
     var idC = req.params.id;
     var actualizar = req.body;
@@ -106,6 +90,5 @@ module.exports = {
     altaCliente,
     getClientes,
     getCliente,
-    getClienteDni,
     putCliente
 }
